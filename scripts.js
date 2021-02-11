@@ -26,23 +26,47 @@ const transactions = [
   },
   {
     id: 1,
-    description: 'Agua',
-    amount: -5000,
+    description: 'Trampo',
+    amount: 5000,
     date: '12/04/2021'
   },
 ]
 
 const Transaction = {
+  all: transactions,
+
+  add(transaction) {
+    Transaction.all.push(transaction)
+  },
+
   incomes() {
-    // somar as entradas
+    let income = 0;
+
+    Transaction.all.forEach(transaction => {
+      if (transaction.amount > 0 ){
+        income += transaction.amount;
+      }
+    })
+
+    return income;
   },
 
   expenses() {
-    // somar as saídas
+    let expense = 0;
+
+    Transaction.all.forEach(transaction => {
+      if (transaction.amount < 0 ) {
+        expense += transaction.amount
+      }
+    })
+
+    return expense;
   },
 
   total() {
     // entradas - saídas
+
+    return Transaction.incomes() + Transaction.expenses()
   }
 }
 
@@ -56,6 +80,7 @@ const DOM = {
     DOM.transactionsContainer.appendChild(tr)
 
   },
+
   innerHTMLTransaction(transaction) {
     const CSSclass = transaction.amount > 0 ? 'income' : 'expense'
 
@@ -71,6 +96,20 @@ const DOM = {
     `
     return html;
 
+  },
+
+  updateBalance() {
+    document
+      .getElementById('incomeDisplay')
+      .innerHTML = Utils.formatCurrency(Transaction.incomes())
+
+    document
+      .getElementById('expenseDisplay')
+      .innerHTML = Utils.formatCurrency(Transaction.expenses())
+
+    document
+      .getElementById('totalDisplay')
+      .innerHTML = Utils.formatCurrency(Transaction.total())
   }
 }
 
@@ -93,3 +132,5 @@ const Utils = {
 }
 
 transactions.forEach(transaction => DOM.addTransaction(transaction))
+
+DOM.updateBalance()
